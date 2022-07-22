@@ -1,0 +1,35 @@
+plugins {
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.10'
+}
+
+group "run.cfloat"
+version "0.0.1"
+mainClassName = "run.cfloat.ApplicationKt"
+
+def isDevelopment = project.ext.has("development")
+applicationDefaultJvmArgs = ["-Dio.ktor.development=$isDevelopment"]
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 参数验证
+    implementation 'org.hibernate.validator:hibernate-validator:7.0.4.Final'
+    implementation 'org.glassfish:jakarta.el:4.0.1'
+
+
+    // 自带的
+    implementation "io.ktor:ktor-server-core-jvm:$ktor_version"
+    implementation "io.ktor:ktor-server-websockets-jvm:$ktor_version"
+    implementation "io.ktor:ktor-server-content-negotiation-jvm:$ktor_version"
+    implementation "io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version"
+    implementation "io.ktor:ktor-server-auth-jvm:$ktor_version"
+    implementation "io.ktor:ktor-server-auth-jwt-jvm:$ktor_version"
+    implementation "io.ktor:ktor-server-netty-jvm:$ktor_version"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    testImplementation "io.ktor:ktor-server-tests-jvm:$ktor_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}
