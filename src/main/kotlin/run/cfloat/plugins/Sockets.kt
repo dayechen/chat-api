@@ -1,6 +1,6 @@
 package run.cfloat.plugins
 
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.serialization.gson.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import java.time.Duration
@@ -10,6 +10,7 @@ import io.ktor.server.response.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 
+
 fun Application.configureSerialization() {
   install(WebSockets) {
     pingPeriod = Duration.ofSeconds(15)
@@ -18,7 +19,7 @@ fun Application.configureSerialization() {
     masking = false
   }
   install(ContentNegotiation) {
-    json()
+    gson()
   }
 
   routing {

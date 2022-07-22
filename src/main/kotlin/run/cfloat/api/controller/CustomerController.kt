@@ -6,9 +6,10 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import jakarta.validation.Validation
-import run.cfloat.api.model.LoginRequest
+import run.cfloat.model.LoginRequest
+import run.cfloat.plugins.AppCore
 
-fun Route.customerController() {
+fun Route.customerController(app: AppCore) {
   route("/customer") {
     get {
       call.respondText("666")
@@ -16,14 +17,8 @@ fun Route.customerController() {
   }
   route("/verification") {
     put {
-      val params = call.receive<LoginRequest>()
-      val factory = Validation.buildDefaultValidatorFactory().validator
-      val errors = factory.validate(params)
-      if (errors.isNotEmpty()) {
-        call.respondText(errors.iterator().next().message)
-        return@put
-      }
-      call.respondText("没有失败${params.username}")
+      val resp = app.bind<LoginRequest>(this)
+      resp.toSuccess()
     }
   }
 }

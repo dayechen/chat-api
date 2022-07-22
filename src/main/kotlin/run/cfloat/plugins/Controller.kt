@@ -5,8 +5,10 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import run.cfloat.api.controller.customerController
 
+
 fun Application.configureController() {
+  val app = AppCore()
   routing {
-    customerController()
+    customerController(app)
   }
 }
