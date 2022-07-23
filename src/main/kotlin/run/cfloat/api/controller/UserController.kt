@@ -15,7 +15,7 @@ fun Route.userController(app: AppCore) {
   route("/verification") {
     put {
       val resp = app.bind<LoginRequest>(this)
-      resp.toSuccess()
+      resp.toSuccess(resp.params)
     }
   }
 }
