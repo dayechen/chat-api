@@ -1,5 +1,6 @@
 package run.cfloat.plugins
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -28,15 +29,15 @@ class Response<T>(
 ) {
   suspend fun toSuccess(data: Any = JSONObject()) {
     ctx.call.respond(
-      message = ResultDot(
+      status = HttpStatusCode.OK, message = ResultDot(
         message = "success", code = 0, data = data
       )
     )
   }
 
-  suspend fun toError(message: String, code: Int = 1) {
+  suspend fun toError(message: String, code: Int = 1, status: HttpStatusCode = HttpStatusCode.BadRequest) {
     ctx.call.respond(
-      message = ResultDot(
+      status = status, message = ResultDot(
         message = message,
         code = code,
       )
@@ -45,30 +46,10 @@ class Response<T>(
 }
 
 class AppCore {
+  /** 表单验证工具 */
   val factory: Validator = Validation.buildDefaultValidatorFactory().validator
 
-  init {
-    setupDataBase()
-  }
-
-  private fun setupDataBase() {
-    val path = "C:\\Home\\Code\\kotlin\\chat-api\\sql.db"
-    Database.connect(url = "jdbc:sqlite:$path", driver = "org.sqlite.JDBC", setupConnection = {
-      SQLiteConfig().apply {
-        // Some options that could help with this but don't
-        setSharedCache(true)
-        setJournalMode(SQLiteConfig.JournalMode.WAL)
-        setLockingMode(SQLiteConfig.LockingMode.EXCLUSIVE)
-        apply(it)
-      }
-    })
-    TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE
-    transaction {
-      addLogger()
-      SchemaUtils.create(Users)
-    }
-  }
-
+  /** 绑定响应 */
   suspend inline fun <reified T : Any> bind(
     ctx: PipelineContext<Unit, ApplicationCall>,
     verify: Boolean = true,

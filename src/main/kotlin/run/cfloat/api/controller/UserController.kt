@@ -26,10 +26,4 @@ fun Route.userController(app: AppCore) {
       resp.toSuccess(mapOf("token" to token))
     }
   }
-  authenticate("auth") {
-    get("/test") {
-      val resp = app.bind<Any>(this)
-      resp.toSuccess(resp.userID)
-    }
-  }
 }

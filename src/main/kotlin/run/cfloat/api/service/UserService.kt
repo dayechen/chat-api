@@ -23,12 +23,8 @@ class UserService {
   }
 
   fun generateToken(userID: Int): String {
-    return JWT.create()
-      .withAudience(audience)
-      .withIssuer(issuer)
-      .withClaim("userID", userID)
-      .withExpiresAt(Date(System.currentTimeMillis() + 6666666666))
-      .sign(Algorithm.HMAC256(secret))
+    return JWT.create().withAudience(audience).withIssuer(issuer).withClaim("userID", userID)
+      .withExpiresAt(Date(System.currentTimeMillis() + 6666666666)).sign(Algorithm.HMAC256(secret))
   }
 
   fun createUser(params: LoginRequest) {
