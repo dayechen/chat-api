@@ -7,8 +7,7 @@ import run.cfloat.api.controller.userController
 import run.cfloat.model.ParameterException
 
 
-fun Application.configureController() {
-  val app = AppCore()
+fun Application.configureController(app: AppCore) {
   routing {
     try {
       userController(app)
