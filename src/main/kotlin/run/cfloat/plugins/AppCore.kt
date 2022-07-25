@@ -23,7 +23,7 @@ import run.cfloat.model.ResultDot
 import java.sql.Connection
 
 
-// 同意的相应
+/** 用于处理响应 */
 class Response<T>(
   val params: T, private val ctx: PipelineContext<Unit, ApplicationCall>, var userID: Int = 0
 ) {

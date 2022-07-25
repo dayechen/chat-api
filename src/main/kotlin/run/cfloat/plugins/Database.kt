@@ -12,7 +12,7 @@ import run.cfloat.entity.Users
 import java.sql.Connection
 
 fun configureDatabase() {
-  val path = "C:\\Home\\Code\\kotlin\\chat-api\\sql.db"
+  val path = "D:\\code\\kotlin\\sex-chat-room\\sql.db"
   Database.connect(url = "jdbc:sqlite:$path", driver = "org.sqlite.JDBC", setupConnection = {
     SQLiteConfig().apply {
       // Some options that could help with this but don't
