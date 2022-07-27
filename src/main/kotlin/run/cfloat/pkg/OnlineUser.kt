@@ -16,7 +16,7 @@ class OnlineUser(
 ) {
 
   /** 参数校验 */
-  val factory: Validator = Validation.buildDefaultValidatorFactory().validator
+  private val factory: Validator = Validation.buildDefaultValidatorFactory().validator
 
   /** 处理json */
   private val gson = Gson()
@@ -34,7 +34,7 @@ class OnlineUser(
     val params: JsonObject
   )
 
-  /** 内部被调用的回调 */
+  /** 用户退出登录 */
   private var logoutHandle: () -> Unit = {}
 
   init {
