@@ -1,4 +1,4 @@
-package run.cfloat.common
+package run.cfloat.pkg
 
 import io.ktor.server.config.*
 

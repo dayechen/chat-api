@@ -5,21 +5,20 @@ import io.ktor.server.routing.*
 import run.cfloat.api.service.FriendService
 import run.cfloat.model.AddFriendRequest
 import run.cfloat.model.PutApplyRequest
-import run.cfloat.plugins.AppCore
+import run.cfloat.plugins.AppResponse
 
-fun Route.friendController(app: AppCore) {
+fun Route.friendController() {
   val svc = FriendService()
   authenticate("auth") {
     route("/friend") {
       /** 获取好友列表 */
       get("/list") {
-        val resp = app.bind<Any>(this)
-
+        val resp = AppResponse(this).build<Any>()
         resp.toSuccess("这里是好友列表")
       }
       /** 添加好友 */
       post {
-        val resp = app.bind<AddFriendRequest>(this)
+        val resp = AppResponse(this).build<AddFriendRequest>()
         /** 查找好友是否存在 */
         if (!svc.checkFriend(resp.params.friendID)) {
           return@post resp.toError("找不到好友")
@@ -36,13 +35,13 @@ fun Route.friendController(app: AppCore) {
       route("/apply") {
         /** 获取好友申请消息 */
         get {
-          val resp = app.bind<Any>(this)
+          val resp = AppResponse(this).build<Any>()
           val result = svc.getApplyList(resp.userID)
           resp.toSuccess(mapOf("list" to result, "userID" to resp.userID))
         }
         /** 设置通过申请 */
         put {
-          val resp = app.bind<PutApplyRequest>(this)
+          val resp = AppResponse(this).build<PutApplyRequest>()
           if (resp.params.status == 1) {
             if (!svc.passAudi(resp.params.applyID)) {
               return@put resp.toError("对方已经是您的好友")

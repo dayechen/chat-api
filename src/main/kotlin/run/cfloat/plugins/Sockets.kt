@@ -5,10 +5,13 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import java.time.Duration
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
+import run.cfloat.api.controller.websocketController
+import run.cfloat.model.ParameterException
 
 
 fun Application.configureSerialization() {
@@ -21,18 +24,11 @@ fun Application.configureSerialization() {
   install(ContentNegotiation) {
     gson()
   }
-
   routing {
-    webSocket("/ws") { // websocketSession
-      for (frame in incoming) {
-        if (frame is Frame.Text) {
-          val text = frame.readText()
-          outgoing.send(Frame.Text("YOU SAID: $text"))
-          if (text.equals("bye", ignoreCase = true)) {
-            close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-          }
-        }
-      }
+    try {
+      websocketController()
+    } catch (e: ParameterException) {
+      println(e.message)
     }
   }
 }

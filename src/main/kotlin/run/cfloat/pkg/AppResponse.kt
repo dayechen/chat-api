@@ -9,35 +9,26 @@ import io.ktor.server.response.*
 import io.ktor.util.pipeline.*
 import jakarta.validation.Validation
 import jakarta.validation.Validator
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
-import org.jetbrains.exposed.sql.transactions.TransactionManager
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.json.simple.JSONObject
-import org.sqlite.SQLiteConfig
-import run.cfloat.entity.Users
 import run.cfloat.model.ParameterException
-import run.cfloat.model.ResultDot
-import java.sql.Connection
+import run.cfloat.model.ResultDTO
 
 
 /** 用于处理响应 */
 class Response<T>(
-  val params: T, private val ctx: PipelineContext<Unit, ApplicationCall>, var userID: Int = 0
+  val params: T, private val call: ApplicationCall, var userID: Int = 0
 ) {
   suspend fun toSuccess(data: Any = JSONObject()) {
-    ctx.call.respond(
-      status = HttpStatusCode.OK, message = ResultDot(
+    call.respond(
+      status = HttpStatusCode.OK, message = ResultDTO(
         message = "success", code = 0, data = data
       )
     )
   }
 
   suspend fun toError(message: String, code: Int = 1, status: HttpStatusCode = HttpStatusCode.BadRequest) {
-    ctx.call.respond(
-      status = status, message = ResultDot(
+    call.respond(
+      status = status, message = ResultDTO(
         message = message,
         code = code,
       )
@@ -45,20 +36,23 @@ class Response<T>(
   }
 }
 
-class AppCore {
-  /** 表单验证工具 */
+class AppResponse(
+  val call: ApplicationCall, val verify: Boolean = true
+) {
   val factory: Validator = Validation.buildDefaultValidatorFactory().validator
 
-  /** 绑定响应 */
-  suspend inline fun <reified T : Any> bind(
+  constructor(
     ctx: PipelineContext<Unit, ApplicationCall>,
     verify: Boolean = true,
+  ) : this(ctx.call, verify)
+
+  suspend inline fun <reified T : Any> build(
   ): Response<T> {
-    val params = ctx.call.receive<T>()
+    val params = call.receive<T>()
     val errors = factory.validate(params)
-    val response = Response(params, ctx)
+    val response = Response(params, call)
     if (verify) {
-      response.userID = ctx.call.principal<JWTPrincipal>()!!.payload.getClaim("userID").asInt()
+      response.userID = call.principal<JWTPrincipal>()!!.payload.getClaim("userID").asInt()
     }
     if (errors.isNotEmpty()) {
       val errMessage = errors.iterator().next().message

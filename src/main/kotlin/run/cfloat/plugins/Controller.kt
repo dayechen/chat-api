@@ -8,11 +8,11 @@ import run.cfloat.api.controller.userController
 import run.cfloat.model.ParameterException
 
 
-fun Application.configureController(app: AppCore) {
+fun Application.configureController() {
   routing {
     try {
-      userController(app)
-      friendController(app)
+      userController()
+      friendController()
     } catch (e: ParameterException) {
       println(e.message)
     }
