@@ -14,7 +14,12 @@ fun Route.friendController() {
       /** 获取好友列表 */
       get("/list") {
         val resp = AppResponse(this).build<Any>()
-        resp.toSuccess("这里是好友列表")
+        val result = svc.getFriendList(resp.userID)
+        resp.toSuccess(
+          mapOf(
+            "list" to result
+          )
+        )
       }
       /** 添加好友 */
       post {

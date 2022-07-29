@@ -9,10 +9,15 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.sqlite.SQLiteConfig
 import run.cfloat.entity.Friends
 import run.cfloat.entity.Users
+import java.io.File
 import java.sql.Connection
 
 fun configureDatabase() {
   val path = "D:\\code\\kotlin\\sex-chat-room\\sql.db"
+  val dbFile = File(path)
+  if (!dbFile.exists()) {
+    dbFile.createNewFile()
+  }
   Database.connect(url = "jdbc:sqlite:$path", driver = "org.sqlite.JDBC", setupConnection = {
     SQLiteConfig().apply {
       // Some options that could help with this but don't

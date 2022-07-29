@@ -45,6 +45,17 @@ class FriendDao {
     }
   }
 
+  /** 获取好友列表 */
+  fun getFriendList(userID: Int): List<Friend> {
+    return transaction {
+      Friends.select {
+        (Friends.userID eq userID) and (Friends.active eq true)
+      }.map {
+        Friends.format(it)
+      }
+    }
+  }
+
   /** 激活好友 */
   fun activeFriend(applyID: Int): Int {
     return transaction {

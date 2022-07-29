@@ -28,6 +28,10 @@ class FriendService {
     return dao.getApplyList(userID)
   }
 
+  fun getFriendList(userID: Int): List<Friend> {
+    return dao.getFriendList(userID)
+  }
+
   /** 检查好友是否存在 */
   fun checkFriend(friendID: Int): Boolean {
     return dao.getUserCount(friendID) > 0

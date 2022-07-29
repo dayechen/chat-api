@@ -48,7 +48,6 @@ class OnlineUser(
       val data = gson.fromJson(text, MessageDTO::class.java)
       val method = methodMap[data.method]
       if (method != null) {
-        println("被解析的字符串${data.params}")
         method(data.params, data.messageID)
       } else {
         // 没有定义方法
