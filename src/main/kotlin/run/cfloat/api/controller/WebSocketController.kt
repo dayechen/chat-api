@@ -7,8 +7,8 @@ import io.ktor.websocket.*
 import run.cfloat.api.service.WebsocketService
 import run.cfloat.model.ParameterException
 import run.cfloat.model.SendMessageSocket
-import run.cfloat.pkg.AppResponse
 import run.cfloat.pkg.OnlineUser
+import run.cfloat.plugins.AppResponse
 
 val svc = WebsocketService()
 
